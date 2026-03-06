@@ -7,9 +7,9 @@ from scraping.models import ProductInfo
 logger = logging.getLogger(__name__)
 
 
-def _parse_price(prices: int, index: int) -> Optional[int]:
+def _parse_price(prices: list, index: int) -> Optional[int]:
     try:
-        txt = prices[index].get_index(strip=True)
+        txt = prices[index].get_text(strip=True)
         txt = txt.replace("$", "").replace(",", "").strip()
 
         return int(float(txt))
@@ -18,7 +18,7 @@ def _parse_price(prices: int, index: int) -> Optional[int]:
 
 
 def parse_product(html: str, category: str, url: str) -> Optional[ProductInfo]:
-    soup = BeautifulSoup(html)
+    soup = BeautifulSoup(html, "html.parser")
 
     try:
         title = soup.find("h4", class_="title")

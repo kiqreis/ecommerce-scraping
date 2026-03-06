@@ -1,5 +1,5 @@
 BASE_URL = "https://webscraper.io/test-sites/e-commerce/allinone"
-DB_NAME = "prices.db"
+DB_NAME = "products.db"
 MAX_PRODUCTS_CATEGORY = 100
 MAX_CONCURRENT_REQUEST = 3
 FETCH_RETRIES = 4

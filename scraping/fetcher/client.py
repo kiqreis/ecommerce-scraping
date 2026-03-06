@@ -65,6 +65,8 @@ async def fetch_page(
                 await asyncio.sleep(wait)
                 continue
 
+            return response.text
+
         except httpx.RequestError as error:
             wait = _calc_backoff(attempt, base_delay)
 

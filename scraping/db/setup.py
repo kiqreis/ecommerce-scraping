@@ -4,7 +4,7 @@ import sqlite3
 def setup_db(connection: sqlite3.Connection) -> None:
     connection.execute(
         """
-        CREATE TABLE IF NOT EXISTS prices (
+        CREATE TABLE IF NOT EXISTS products (
             id           INTEGER PRIMARY KEY AUTOINCREMENT,
             product_name TEXT,
             price        INTEGER,
@@ -15,5 +15,5 @@ def setup_db(connection: sqlite3.Connection) -> None:
         """
     )
 
-    connection.execute("CREATE INDEX IF NOT EXISTS idx_category ON prices (category)")
+    connection.execute("CREATE INDEX IF NOT EXISTS idx_category ON products (category)")
     connection.commit()

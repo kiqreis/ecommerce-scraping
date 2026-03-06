@@ -13,7 +13,7 @@ def get_max_price(
     cursor = connection.execute(
         """
         SELECT price, timestamp
-        FROM prices
+        FROM products
         WHERE category = ?
         ORDER BY price DESC
         LIMIT 1
@@ -28,7 +28,7 @@ def get_max_price(
 
 def price_variation(connection: sqlite3.Connection, category: str) -> pd.DataFrame:
     df = pd.read_sql(
-        "SELECT product_name, price, timestamp FROM prices WHERE category = ?",
+        "SELECT product_name, price, timestamp FROM products WHERE category = ?",
         connection,
         params=(category,),
     )
@@ -46,7 +46,7 @@ def price_variation(connection: sqlite3.Connection, category: str) -> pd.DataFra
 
 def price_summary(connection: sqlite3.Connection, category: str) -> pd.DataFrame:
     df = pd.read_sql(
-        "SELECT product_name, price FROM prices WHERE category = ?",
+        "SELECT product_name, price FROM products WHERE category = ?",
         connection,
         params=(category,),
     )
