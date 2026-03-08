@@ -1,5 +1,5 @@
 import logging
-import sqlite3
+import psycopg
 from typing import Optional
 
 import pandas as pd
@@ -8,13 +8,13 @@ logger = logging.getLogger(__name__)
 
 
 def get_max_price(
-    connection: sqlite3.Connection, category: str
+    connection: psycopg.Connection, category: str
 ) -> tuple[Optional[int], Optional[str]]:
     cursor = connection.execute(
         """
         SELECT price, timestamp
         FROM products
-        WHERE category = ?
+        WHERE category = %s
         ORDER BY price DESC
         LIMIT 1
         """,
@@ -26,9 +26,9 @@ def get_max_price(
     return (result[0], result[1]) if result else (None, None)
 
 
-def price_variation(connection: sqlite3.Connection, category: str) -> pd.DataFrame:
+def price_variation(connection: psycopg.Connection, category: str) -> pd.DataFrame:
     df = pd.read_sql(
-        "SELECT product_name, price, timestamp FROM products WHERE category = ?",
+        "SELECT product_name, price, timestamp FROM products WHERE category = %s",
         connection,
         params=(category,),
     )
@@ -44,9 +44,9 @@ def price_variation(connection: sqlite3.Connection, category: str) -> pd.DataFra
     return df
 
 
-def price_summary(connection: sqlite3.Connection, category: str) -> pd.DataFrame:
+def price_summary(connection: psycopg.Connection, category: str) -> pd.DataFrame:
     df = pd.read_sql(
-        "SELECT product_name, price FROM products WHERE category = ?",
+        "SELECT product_name, price FROM products WHERE category = %s",
         connection,
         params=(category,),
     )
