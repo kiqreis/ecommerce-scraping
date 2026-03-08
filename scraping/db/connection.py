@@ -1,9 +1,10 @@
-import sqlite3
-from scraping.config import DB_NAME
+import logging
+import psycopg
+
+from scraping.config import DB_CONFIG
+
+logger = logging.getLogger(__name__)
 
 
-def create_connection(db: str = DB_NAME) -> sqlite3.Connection:
-    connection = sqlite3.connect(db)
-    connection.execute("PRAGMA journal_mode=WAL")
-
-    return connection
+def create_connection(db_config: dict = DB_CONFIG) -> psycopg.Connection:
+    return psycopg.connect(**db_config)
