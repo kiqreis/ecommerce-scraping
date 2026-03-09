@@ -3,6 +3,7 @@ import logging
 
 import httpx
 
+from scraping.bot.notifications import notify_error, notify_success
 from scraping.config import (
     BASE_URL,
     MAX_CONCURRENT_REQUEST,
@@ -36,8 +37,13 @@ async def scrape_category(
     html = await fetch_page(client, category_url)
 
     if not html:
+        message = "Failed to fetch listing page"
+
         logger.warning(f"Category {category} ignored due to listing failure")
-        return
+
+        await notify_error(category, message)
+
+        return None
 
     product_urls = parse_products_url(html)
 
@@ -56,6 +62,10 @@ async def scrape_category(
     ]
 
     save_products(connection, products)
+
+    await notify_success(products, category)
+
+    return None
 
 
 async def main(categories: dict[str, str]) -> None:
@@ -80,6 +90,8 @@ async def main(categories: dict[str, str]) -> None:
     connection.close()
 
     logger.info("Scraping finished")
+
+    return None
 
 
 if __name__ == "__main__":
