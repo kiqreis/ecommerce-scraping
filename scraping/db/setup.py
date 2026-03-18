@@ -10,7 +10,7 @@ def setup_db(connection: psycopg.Connection) -> None:
             price        INTEGER,
             category     TEXT,
             url          TEXT,
-            timestamp    TIMESTAMP
+            timestamp    TIMESTAMPTZ
         )
         """
     )
