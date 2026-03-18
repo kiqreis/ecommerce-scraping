@@ -23,7 +23,7 @@ async def send_message(txt: str, chat_id: Optional[str] = None) -> bool:
     try:
         async with httpx.AsyncClient(timeout=10.0) as client:
             response = await client.post(
-                url, json={"chat_id": target, "text": txt, "parse_mode": "Markdown"}
+                url, json={"chat_id": target, "text": txt, "parse_mode": "HTML"}
             )
 
             response.raise_for_status()
