@@ -96,11 +96,13 @@ def detect_price_changes(
 
             if abs(pct) >= threshold_pct:
                 changes.append(
-                    "product_name": product.product_name,
-                    "url": product.url,
-                    "old_price": old_price,
-                    "new_price": product.price,
-                    "pct_change": pct
+                    {
+                        "product_name": product.product_name,
+                        "url": product.url,
+                        "old_price": old_price,
+                        "new_price": product.price,
+                        "pct_change": pct,
+                    }
                 )
 
     return changes

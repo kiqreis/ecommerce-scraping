@@ -85,7 +85,12 @@ async def main(categories: dict[str, str]) -> None:
             for category, url in categories.items()
         ]
 
-        await asyncio.gather(*tasks)
+        results = await asyncio.gather(*tasks, return_exceptions=True)
+
+    for category, result in zip(categories.keys(), results):
+        if isinstance(result, Exception):
+            logger.error(f"Task {category} failed: {result}")
+            await notify_error(category, str(result))
 
     connection.close()
 
