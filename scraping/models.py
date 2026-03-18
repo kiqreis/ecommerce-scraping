@@ -1,3 +1,4 @@
+from datetime import datetime, timezone
 import time
 from dataclasses import dataclass, field
 from typing import Optional
@@ -9,4 +10,4 @@ class ProductInfo:
     price: Optional[int]
     category: str
     url: str
-    timestamp: str = field(default_factory=lambda: time.strftime("%d-%m-%Y %H:%M:%S"))
+    timestamp: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
