@@ -4,6 +4,8 @@ from typing import Optional
 
 import pandas as pd
 
+from scraping.models import ProductInfo
+
 logger = logging.getLogger(__name__)
 
 
@@ -60,3 +62,45 @@ def price_summary(connection: psycopg.Connection, category: str) -> pd.DataFrame
         .reset_index()
         .sort_values("avg_price", ascending=False)
     )
+
+
+def detect_price_changes(
+    connection: psycopg.Connection,
+    products: list[ProductInfo],
+    threshold_pct: float = 1.0,
+) -> list[dict]:
+    if not products:
+        return None
+
+    names = [p.product_name for p in products]
+
+    cursor = connection.execute(
+        """
+        SELECT DISTINCT ON (product_name) product_name, price
+        FROM products
+        WHERE product_name = ANY(%s)
+        ORDER BY product_name, timestamp DESC
+        """,
+        (names,),
+    )
+
+    latest_prices = {row[0]: row[1] for row in cursor.fetchall()}
+
+    changes = []
+
+    for product in products:
+        old_price = latest_prices.get(product.product_name)
+
+        if old_price and product.price:
+            pct = ((product.price - old_price) / old_price) * 100
+
+            if abs(pct) >= threshold_pct:
+                changes.append(
+                    "product_name": product.product_name,
+                    "url": product.url,
+                    "old_price": old_price,
+                    "new_price": product.price,
+                    "pct_change": pct
+                )
+
+    return changes
